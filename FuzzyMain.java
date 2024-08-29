@@ -5,41 +5,41 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
+
 public class FuzzyMain {
 	public static void main(String[] args) {
 
 		GrupoVariaveis grupoVoteAvg = new GrupoVariaveis();
-		grupoVoteAvg.add(new VariavelFuzzy("Muito Ruim", 0, 0, 10, 30));
-		grupoVoteAvg.add(new VariavelFuzzy("Ruim", 20, 30, 40, 50));
-		grupoVoteAvg.add(new VariavelFuzzy("Mediano", 40, 50, 60, 70));
-		grupoVoteAvg.add(new VariavelFuzzy("Bom", 60, 70, 80, 90));
-		grupoVoteAvg.add(new VariavelFuzzy("Muito Bom", 80, 90, 100, 100));
+		grupoVoteAvg.add(new VariavelFuzzy("Muito RuimQ", 0, 0, 10, 30));
+		grupoVoteAvg.add(new VariavelFuzzy("RuimQ", 20, 30, 40, 50));
+		grupoVoteAvg.add(new VariavelFuzzy("MedianoQ", 40, 50, 60, 70));
+		grupoVoteAvg.add(new VariavelFuzzy("BomQ", 60, 70, 80, 90));
+		grupoVoteAvg.add(new VariavelFuzzy("Muito BomQ", 80, 90, 100, 100));
 
 		GrupoVariaveis grupoRunTime = new GrupoVariaveis();
-		grupoRunTime.add(new VariavelFuzzy("Curto", 0, 0, 75, 90));
-		grupoRunTime.add(new VariavelFuzzy("Ideal", 75, 90, 140, 150));
-		grupoRunTime.add(new VariavelFuzzy("Longo", 140, 150, Float.MAX_VALUE, Float.MAX_VALUE));
+		grupoRunTime.add(new VariavelFuzzy("CurtoD", 0, 0, 75, 90));
+		grupoRunTime.add(new VariavelFuzzy("IdealD", 75, 90, 140, 150));
+		grupoRunTime.add(new VariavelFuzzy("LongoD", 140, 150, Float.MAX_VALUE, Float.MAX_VALUE));
 
 		GrupoVariaveis grupoProfit = new GrupoVariaveis();
-		grupoProfit.add(new VariavelFuzzy("Negativo", Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY, 0, 0));
-		grupoProfit.add(new VariavelFuzzy("Pequeno", 0, 600000, 600000, 800000));
-		grupoProfit.add(new VariavelFuzzy("Medio", 600000, 1000000, 100000000, 150000000));
-		grupoProfit.add(new VariavelFuzzy("Grande", 100000000, 250000000, Float.MAX_VALUE, Float.MAX_VALUE));
+		grupoProfit.add(new VariavelFuzzy("NegativoL", Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY, 0, 0));
+		grupoProfit.add(new VariavelFuzzy("PequenoL", 0, 600000, 600000, 800000));
+		grupoProfit.add(new VariavelFuzzy("MedioL", 600000, 1000000, 100000000, 150000000));
+		grupoProfit.add(new VariavelFuzzy("GrandeL", 100000000, 250000000, Float.MAX_VALUE, Float.MAX_VALUE));
 
 		GrupoVariaveis grupoPopularity = new GrupoVariaveis();
-		grupoPopularity.add(new VariavelFuzzy("Baixa", 0, 0, 50000000, 100000000));
-		grupoPopularity.add(new VariavelFuzzy("Média", 50000000, 100000000, 500000000, 1000000000));
-		grupoPopularity.add(new VariavelFuzzy("Alta", 500000000, 1000000000, 5000000000L, 10000000000L));
-		grupoPopularity
-				.add(new VariavelFuzzy("Muito Alta", 5000000000L, 10000000000L, Float.MAX_VALUE, Float.MAX_VALUE));
+		grupoPopularity.add(new VariavelFuzzy("BaixaP", 0, 0, 50000000, 100000000));
+		grupoPopularity.add(new VariavelFuzzy("MédiaP", 50000000, 100000000, 500000000, 1000000000));
+		grupoPopularity.add(new VariavelFuzzy("AltaP", 500000000, 1000000000, 5000000000L, 10000000000L));
+		grupoPopularity.add(new VariavelFuzzy("Muito AltaP", 5000000000L, 10000000000L, Float.MAX_VALUE, Float.MAX_VALUE));
 
 		GrupoVariaveis grupoGenres = new GrupoVariaveis();
-		grupoPopularity.add(new VariavelFuzzy("Ruim", 0, 0, 2, 2.5f));
-		grupoPopularity.add(new VariavelFuzzy("Média", 2, 3, 4, 5));
-		grupoPopularity.add(new VariavelFuzzy("Boa", 4, 5, 5, 5));
+		grupoGenres.add(new VariavelFuzzy("RuimG", 0, 0, 2, 2.5f));
+		grupoGenres.add(new VariavelFuzzy("MédiaG", 2, 3, 4, 5));
+		grupoGenres.add(new VariavelFuzzy("BoaG", 4, 5, 5, 5));
 
 		try {
-			BufferedReader bfr = new BufferedReader(new FileReader(new File("..Dados/new.csv")));
+			BufferedReader bfr = new BufferedReader(new FileReader(new File("Dados/new.csv")));
 			String header = bfr.readLine();
 			HashMap<String, Integer> osGeneros = dicionario();
 			
@@ -64,6 +64,9 @@ public class FuzzyMain {
 					if (listaGeneros[i] == null) {
 						continue;
 					}
+					if(listaGeneros[i] == ""){
+						break;
+					}
 					if (osGeneros.get(listaGeneros[i]) == 0) {
 						continue;
 					}
@@ -84,47 +87,64 @@ public class FuzzyMain {
 				grupoPopularity.fuzzifica(popularity, asVariaveis);
 				grupoGenres.fuzzifica(nota, asVariaveis);
 
-				System.out.println("Fuzzyfication Results for Index: " + lineIndex + ", Title: " + title);
-				System.out.println("Profit Fuzzyfication: " + asVariaveis.get("Negativo") + " (Negativo), " +
-						asVariaveis.get("Pequeno") + " (Pequeno), " +
-						asVariaveis.get("Medio") + " (Medio), " +
-						asVariaveis.get("Grande") + " (Grande)");
+				/*System.out.println("Fuzzyfication Results for Index: " + lineIndex + ", Title: " + title);
+				System.out.println("Profit Fuzzyfication: " + asVariaveis.get("NegativoL") + " (Negativo), " +
+						asVariaveis.get("PequenoL") + " (Pequeno), " +
+						asVariaveis.get("MedioL") + " (Medio), " +
+						asVariaveis.get("GrandeL") + " (Grande)");
 
-				System.out.println("Vote Average Fuzzyfication: " + asVariaveis.get("Muito Ruim") + " (Muito Ruim), " +
-						asVariaveis.get("Ruim") + " (Ruim), " +
-						asVariaveis.get("Mediano") + " (Mediano), " +
-						asVariaveis.get("Bom") + " (Bom), " +
-						asVariaveis.get("Muito Bom") + " (Muito Bom)");
+				System.out.println("Vote Average Fuzzyfication: " + asVariaveis.get("Muito RuimQ") + " (Muito Ruim), " +
+						asVariaveis.get("RuimQ") + " (Ruim), " +
+						asVariaveis.get("MedianoQ") + " (Mediano), " +
+						asVariaveis.get("BomQ") + " (Bom), " +
+						asVariaveis.get("Muito BomQ") + " (Muito Bom)");
 
-				System.out.println("Runtime Fuzzyfication: " + asVariaveis.get("Curto") + " (Curto), " +
-						asVariaveis.get("Ideal") + " (Ideal), " +
-						asVariaveis.get("Longo") + " (Longo)");
+				System.out.println("Runtime Fuzzyfication: " + asVariaveis.get("CurtoD") + " (Curto), " +
+						asVariaveis.get("IdealD") + " (Ideal), " +
+						asVariaveis.get("LongoD") + " (Longo)");
 
-				System.out.println("Popularity Fuzzyfication: " + asVariaveis.get("Baixa") + " (Baixa), " +
-						asVariaveis.get("Média") + " (Média), " +
-						asVariaveis.get("Alta") + " (Alta), " +
-						asVariaveis.get("Muito Alta") + " (Muito Alta)");
+				System.out.println("Popularity Fuzzyfication: " + asVariaveis.get("BaixaP") + " (Baixa), " +
+						asVariaveis.get("MédiaP") + " (Média), " +
+						asVariaveis.get("AltaP") + " (Alta), " +
+						asVariaveis.get("Muito AltaP") + " (Muito Alta)");
 
-				System.out.println("Genres Fuzzyfication: " + asVariaveis.get("Ruim") + " (Ruim), " +
-						asVariaveis.get("Média") + " (Média), " +
-						asVariaveis.get("Boa") + " (Boa), ");
+				System.out.println("Genres Fuzzyfication: " + asVariaveis.get("RuimG") + " (Ruim), " +
+						asVariaveis.get("MédiaG") + " (Média), " +
+						asVariaveis.get("BoaG") + " (Boa), ");
 
-				System.out.println("--------------------------------------------------");
+				System.out.println("--------------------------------------------------");*/
 
-				rodaRegraE(asVariaveis, "Negativo", "Curto", "NA");
-				rodaRegraE(asVariaveis, "Pequeno", "Ideal", "A");
-				rodaRegraE(asVariaveis, "Medio", "Longo", "MA");
+				float qualidade = (asVariaveis.get("Muito RuimQ")*2 
+				+ asVariaveis.get("RuimQ")*4  
+				+ asVariaveis.get("MedianoQ")*6 
+				+ asVariaveis.get("BomQ")*8
+				+ asVariaveis.get("Muito BomQ")*10);
 
-				float NA = asVariaveis.getOrDefault("NA", 0.0f);
-				float A = asVariaveis.getOrDefault("A", 0.0f);
-				float MA = asVariaveis.getOrDefault("MA", 0.0f);
+				float duracao = (asVariaveis.get("CurtoD")*6
+				+ asVariaveis.get("IdealD")*10
+				+ asVariaveis.get("LongoD")*4);
 
-				float score = (NA * 1.5f + A * 7.0f + MA * 9.5f) / (NA + A + MA);
+				float lucro = (asVariaveis.get("NegativoL")*0
+				+ asVariaveis.get("PequenoL")*6
+				+ asVariaveis.get("MedioL")*8
+				+ asVariaveis.get("GrandeL")*10);
 
-				System.out.printf(
-						"Index: %s, Title: %s, Profit: %.1f, Vote Average: %.1f, Runtime: %.1f, Popularity: %.1f -> Score: %.2f%n",
-						lineIndex, title, profit, voteAverage, runtime, popularity, score);
-				System.out.println("==================================================");
+				float popularidade = (asVariaveis.get("BaixaP")*4
+				+ asVariaveis.get("MédiaP")*6
+				+ asVariaveis.get("AltaP")*8
+				+ asVariaveis.get("Muito AltaP")*10);
+
+				float generos = (asVariaveis.get("RuimG")*4
+				+ asVariaveis.get("MédiaG")*8
+				+ asVariaveis.get("BoaG")*10);
+
+				float notafinal = (qualidade + duracao + lucro + popularidade + generos)/5;
+
+				if(notafinal >= 0){
+					System.out.printf(
+							"Index: %s, Title: %s, Profit: %.1f, Vote Average: %.1f, Runtime: %.1f, Popularity: %.1f -> Score: %.2f%n",
+							lineIndex, title, profit, voteAverage, runtime, popularity, notafinal);
+					System.out.println("==================================================");}
 			}
 
 		} catch (FileNotFoundException e) {
@@ -132,11 +152,6 @@ public class FuzzyMain {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	private static void rodaRegraE(HashMap<String, Float> asVariaveis, String var1, String var2, String varr) {
-		float v = Math.min(asVariaveis.get(var1), asVariaveis.get(var2));
-		asVariaveis.put(varr, Math.max(asVariaveis.getOrDefault(varr, 0.0f), v));
 	}
 
 	private static float parseFloatOrZero(String value) {
@@ -149,7 +164,7 @@ public class FuzzyMain {
 
 	public static HashMap<String, Integer> dicionario() {
 		HashMap<String, Integer> generosMap = new HashMap<>();
-		try (BufferedReader br = new BufferedReader(new FileReader(new File("generos.txt")))) {
+		try (BufferedReader br = new BufferedReader(new FileReader(new File("Dados/generos.txt")))) {
 			String line;
 			while ((line = br.readLine()) != null) {
 				String[] parts = line.split(" = ");
