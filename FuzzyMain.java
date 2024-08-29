@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 
 public class FuzzyMain {
 	public static void main(String[] args) {
@@ -40,7 +39,7 @@ public class FuzzyMain {
 		grupoPopularity.add(new VariavelFuzzy("Boa", 4, 5, 5, 5));
 
 		try {
-			BufferedReader bfr = new BufferedReader(new FileReader(new File("new.csv")));
+			BufferedReader bfr = new BufferedReader(new FileReader(new File("..Dados/new.csv")));
 			String header = bfr.readLine();
 			HashMap<String, Integer> osGeneros = dicionario();
 			
