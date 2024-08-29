@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "FuzzyMain",
+            "request": "launch",
+            "mainClass": "FuzzyMain",
+            "projectName": "IA-M1_93023531"
+        },
+        {
+            "type": "java",
             "name": "Main",
             "request": "launch",
             "mainClass": "Main",

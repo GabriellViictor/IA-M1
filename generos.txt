@@ -1,0 +1,23 @@
+Action = 4
+Adventure = 4
+Fantasy = 4
+Science = 4
+Fiction = 5
+Crime = 4
+Drama = 4
+Thriller = 4
+Animation = 4
+Family = N
+Western = N
+Comedy = 4
+Romance = 2
+Horror = 1
+Mystery = 5
+History = 3
+War = 2
+Music = N
+Documentary = 3
+Foreign = N
+TV = N
+Movie = N
+	 
