@@ -9,6 +9,13 @@
             "name": "FuzzyMain",
             "request": "launch",
             "mainClass": "FuzzyMain",
+            "projectName": "IA-M1_c9901c15"
+        },
+        {
+            "type": "java",
+            "name": "FuzzyMain",
+            "request": "launch",
+            "mainClass": "FuzzyMain",
             "projectName": "IA-M1_5ac99668"
         },
         {

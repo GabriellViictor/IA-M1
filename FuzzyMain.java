@@ -3,8 +3,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
-
+import java.util.List;
 
 public class FuzzyMain {
 	public static void main(String[] args) {
@@ -42,7 +43,7 @@ public class FuzzyMain {
 			BufferedReader bfr = new BufferedReader(new FileReader(new File("Dados/new.csv")));
 			String header = bfr.readLine();
 			HashMap<String, Integer> osGeneros = dicionario();
-			
+			float score;
 
 			String line = "";
 			while ((line = bfr.readLine()) != null) {
@@ -64,7 +65,7 @@ public class FuzzyMain {
 					if (listaGeneros[i] == null) {
 						continue;
 					}
-					if(listaGeneros[i] == ""){
+					if (listaGeneros[i] == "") {
 						break;
 					}
 					if (osGeneros.get(listaGeneros[i]) == 0) {
@@ -87,64 +88,124 @@ public class FuzzyMain {
 				grupoPopularity.fuzzifica(popularity, asVariaveis);
 				grupoGenres.fuzzifica(nota, asVariaveis);
 
-				/*System.out.println("Fuzzyfication Results for Index: " + lineIndex + ", Title: " + title);
-				System.out.println("Profit Fuzzyfication: " + asVariaveis.get("NegativoL") + " (Negativo), " +
-						asVariaveis.get("PequenoL") + " (Pequeno), " +
-						asVariaveis.get("MedioL") + " (Medio), " +
-						asVariaveis.get("GrandeL") + " (Grande)");
+				// Regras combinando variáveis de Popularidade e Runtime
+				rodaRegraE(asVariaveis, "BaixaP", "CurtoD", "Ruim");
+				rodaRegraE(asVariaveis, "MédiaP", "IdealD", "Bom");
+				rodaRegraE(asVariaveis, "AltaP", "LongoD", "Medio");
+				rodaRegraE(asVariaveis, "Muito AltaP", "LongoD", "Bom");
 
-				System.out.println("Vote Average Fuzzyfication: " + asVariaveis.get("Muito RuimQ") + " (Muito Ruim), " +
-						asVariaveis.get("RuimQ") + " (Ruim), " +
-						asVariaveis.get("MedianoQ") + " (Mediano), " +
-						asVariaveis.get("BomQ") + " (Bom), " +
-						asVariaveis.get("Muito BomQ") + " (Muito Bom)");
+				// Regras combinando variáveis de Profit e Vote Average
+				rodaRegraE(asVariaveis, "NegativoL", "Muito RuimQ", "Ruim");
+				rodaRegraE(asVariaveis, "PequenoL", "RuimQ", "Medio");
+				rodaRegraE(asVariaveis, "MedioL", "BomQ", "Bom");
+				rodaRegraE(asVariaveis, "GrandeL", "Muito BomQ", "Muito Bom");
 
-				System.out.println("Runtime Fuzzyfication: " + asVariaveis.get("CurtoD") + " (Curto), " +
-						asVariaveis.get("IdealD") + " (Ideal), " +
-						asVariaveis.get("LongoD") + " (Longo)");
+				// Regras combinando variáveis de Genres e Vote Average
+				rodaRegraE(asVariaveis, "RuimG", "Muito RuimQ", "Ruim");
+				rodaRegraE(asVariaveis, "MédiaG", "MedianoQ", "Medio");
+				rodaRegraE(asVariaveis, "BoaG", "BomQ", "Bom");
+				rodaRegraE(asVariaveis, "BoaG", "Muito BomQ", "Muito Bom");
 
-				System.out.println("Popularity Fuzzyfication: " + asVariaveis.get("BaixaP") + " (Baixa), " +
-						asVariaveis.get("MédiaP") + " (Média), " +
-						asVariaveis.get("AltaP") + " (Alta), " +
-						asVariaveis.get("Muito AltaP") + " (Muito Alta)");
+				// Regras combinando variáveis de Popularidade e Profit
+				rodaRegraE(asVariaveis, "BaixaP", "NegativoL", "Ruim");
+				rodaRegraE(asVariaveis, "MédiaP", "PequenoL", "Medio");
+				rodaRegraE(asVariaveis, "AltaP", "MedioL", "Bom");
+				rodaRegraE(asVariaveis, "Muito AltaP", "GrandeL", "Bom");
 
-				System.out.println("Genres Fuzzyfication: " + asVariaveis.get("RuimG") + " (Ruim), " +
-						asVariaveis.get("MédiaG") + " (Média), " +
-						asVariaveis.get("BoaG") + " (Boa), ");
+				// Regras combinando variáveis de Runtime e Genres
+				rodaRegraE(asVariaveis, "CurtoD", "RuimG", "Ruim");
+				rodaRegraE(asVariaveis, "IdealD", "MédiaG", "Bom");
+				rodaRegraE(asVariaveis, "LongoD", "BoaG", "Medio");
 
-				System.out.println("--------------------------------------------------");*/
+				// Regras usando OU para variáveis de Profit e Runtime
+				rodaRegraOU(asVariaveis, "NegativoL", "CurtoD", "Ruim");
+				rodaRegraOU(asVariaveis, "PequenoL", "LongoD", "Medio");
+				rodaRegraOU(asVariaveis, "MedioL", "IdealD", "Bom");
+				rodaRegraOU(asVariaveis, "GrandeL", "CurtoD", "Bom");
 
-				float qualidade = (asVariaveis.get("Muito RuimQ")*2 
-				+ asVariaveis.get("RuimQ")*4  
-				+ asVariaveis.get("MedianoQ")*6 
-				+ asVariaveis.get("BomQ")*8
-				+ asVariaveis.get("Muito BomQ")*10);
+				// Regras usando OU para variáveis de Vote Average e Popularidade
+				rodaRegraOU(asVariaveis, "Muito RuimQ", "BaixaP", "Ruim");
+				rodaRegraOU(asVariaveis, "RuimQ", "MédiaP", "Medio");
+				rodaRegraOU(asVariaveis, "MedianoQ", "AltaP", "Bom");
+				rodaRegraOU(asVariaveis, "BomQ", "Muito AltaP", "Bom");
 
-				float duracao = (asVariaveis.get("CurtoD")*6
-				+ asVariaveis.get("IdealD")*10
-				+ asVariaveis.get("LongoD")*4);
+				// Regras usando E para variáveis de Genres e Profit
+				rodaRegraE(asVariaveis, "RuimG", "NegativoL", "Ruim");
+				rodaRegraE(asVariaveis, "MédiaG", "PequenoL", "Medio");
+				rodaRegraE(asVariaveis, "BoaG", "GrandeL", "Bom");
+				
+				float B = asVariaveis.get("Bom");
+				float M = asVariaveis.get("Medio");
+				float R = asVariaveis.get("Ruim");
 
-				float lucro = (asVariaveis.get("NegativoL")*0
-				+ asVariaveis.get("PequenoL")*6
-				+ asVariaveis.get("MedioL")*8
-				+ asVariaveis.get("GrandeL")*10);
+				score = (R * 1.5f + M * 7.0f + B * 9.5f) / (R + M + B);
+				
+				/*
+				 * System.out.println("Fuzzyfication Results for Index: " + lineIndex +
+				 * ", Title: " + title);
+				 * System.out.println("Profit Fuzzyfication: " + asVariaveis.get("NegativoL") +
+				 * " (Negativo), " +
+				 * asVariaveis.get("PequenoL") + " (Pequeno), " +
+				 * asVariaveis.get("MedioL") + " (Medio), " +
+				 * asVariaveis.get("GrandeL") + " (Grande)");
+				 * 
+				 * System.out.println("Vote Average Fuzzyfication: " +
+				 * asVariaveis.get("Muito RuimQ") + " (Muito Ruim), " +
+				 * asVariaveis.get("RuimQ") + " (Ruim), " +
+				 * asVariaveis.get("MedianoQ") + " (Mediano), " +
+				 * asVariaveis.get("BomQ") + " (Bom), " +
+				 * asVariaveis.get("Muito BomQ") + " (Muito Bom)");
+				 * 
+				 * System.out.println("Runtime Fuzzyfication: " + asVariaveis.get("CurtoD") +
+				 * " (Curto), " +
+				 * asVariaveis.get("IdealD") + " (Ideal), " +
+				 * asVariaveis.get("LongoD") + " (Longo)");
+				 * 
+				 * System.out.println("Popularity Fuzzyfication: " + asVariaveis.get("BaixaP") +
+				 * " (Baixa), " +
+				 * asVariaveis.get("MédiaP") + " (Média), " +
+				 * asVariaveis.get("AltaP") + " (Alta), " +
+				 * asVariaveis.get("Muito AltaP") + " (Muito Alta)");
+				 * 
+				 * System.out.println("Genres Fuzzyfication: " + asVariaveis.get("RuimG") +
+				 * " (Ruim), " +
+				 * asVariaveis.get("MédiaG") + " (Média), " +
+				 * asVariaveis.get("BoaG") + " (Boa), ");
+				 * 
+				 * System.out.println("--------------------------------------------------");
+				 */
+				float qualidade = (asVariaveis.get("Muito RuimQ") * 2
+						+ asVariaveis.get("RuimQ") * 4
+						+ asVariaveis.get("MedianoQ") * 6
+						+ asVariaveis.get("BomQ") * 8
+						+ asVariaveis.get("Muito BomQ") * 10);
 
-				float popularidade = (asVariaveis.get("BaixaP")*4
-				+ asVariaveis.get("MédiaP")*6
-				+ asVariaveis.get("AltaP")*8
-				+ asVariaveis.get("Muito AltaP")*10);
+				float duracao = (asVariaveis.get("CurtoD") * 6
+						+ asVariaveis.get("IdealD") * 10
+						+ asVariaveis.get("LongoD") * 4);
 
-				float generos = (asVariaveis.get("RuimG")*4
-				+ asVariaveis.get("MédiaG")*8
-				+ asVariaveis.get("BoaG")*10);
+				float lucro = (asVariaveis.get("NegativoL") * 0
+						+ asVariaveis.get("PequenoL") * 6
+						+ asVariaveis.get("MedioL") * 8
+						+ asVariaveis.get("GrandeL") * 10);
 
-				float notafinal = (qualidade + duracao + lucro + popularidade + generos)/5;
+				float popularidade = (asVariaveis.get("BaixaP") * 4
+						+ asVariaveis.get("MédiaP") * 6
+						+ asVariaveis.get("AltaP") * 8
+						+ asVariaveis.get("Muito AltaP") * 10);
 
-				if(notafinal >= 0){
+				float generos = (asVariaveis.get("RuimG") * 4
+						+ asVariaveis.get("MédiaG") * 8
+						+ asVariaveis.get("BoaG") * 10);
+
+				//float notafinal = (qualidade + duracao + lucro + popularidade + generos) / 5;
+
+				if (score > 0) {
 					System.out.printf(
 							"Index: %s, Title: %s, Profit: %.1f, Vote Average: %.1f, Runtime: %.1f, Popularity: %.1f -> Score: %.2f%n",
-							lineIndex, title, profit, voteAverage, runtime, popularity, notafinal);
-					System.out.println("==================================================");}
+							lineIndex, title, profit, voteAverage, runtime, popularity, score);
+					System.out.println("==================================================");
+				}
 			}
 
 		} catch (FileNotFoundException e) {
@@ -168,7 +229,7 @@ public class FuzzyMain {
 			String line;
 			while ((line = br.readLine()) != null) {
 				String[] parts = line.split(" = ");
-				if(parts.length < 2){
+				if (parts.length < 2) {
 					break;
 				}
 				String genre = parts[0].trim();
@@ -180,6 +241,26 @@ public class FuzzyMain {
 			e.printStackTrace();
 		}
 		return generosMap;
+	}
+
+	private static void rodaRegraE(HashMap<String, Float> asVariaveis, String var1, String var2, String varr) {
+		float v = Math.min(asVariaveis.get(var1), asVariaveis.get(var2));
+		if (asVariaveis.keySet().contains(varr)) {
+			float vatual = asVariaveis.get(varr);
+			asVariaveis.put(varr, Math.max(vatual, v));
+		} else {
+			asVariaveis.put(varr, v);
+		}
+	}
+
+	private static void rodaRegraOU(HashMap<String, Float> asVariaveis, String var1, String var2, String varr) {
+		float v = Math.max(asVariaveis.get(var1), asVariaveis.get(var2));
+		if (asVariaveis.keySet().contains(varr)) {
+			float vatual = asVariaveis.get(varr);
+			asVariaveis.put(varr, Math.max(vatual, v));
+		} else {
+			asVariaveis.put(varr, v);
+		}
 	}
 
 }
